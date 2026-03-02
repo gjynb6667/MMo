@@ -1,0 +1,33 @@
+1.B
+2.C
+3.C
+4.B
+5.C
+6.B
+7.B
+8.A
+9.B
+10.C
+1.Numerical Python
+2.array
+3.0,10
+4.zeros
+5.32
+6.广播
+7.7
+8.bool_
+9.pip
+10.多维数组
+1.ndarray底层是c语言，相对于python运算更快，性能更优越
+提供多维数组，内存地址连续，
+内置丰富的运算函数
+有多个接口例如（matlib）
+2.三维
+（2,2,3）
+[2][1][2]
+12
+3.import  numpy as np
+a = np.arange(0,20,2)
+b = np.ones((3,4),np.float32)
+c = np.zeros((2,3,4))
+d = np.full((2,3),9)
