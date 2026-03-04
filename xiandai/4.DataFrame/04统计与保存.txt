@@ -1,0 +1,98 @@
+1.a
+2.a
+3.c
+4.b
+5.b
+6.b
+7.c
+1.1
+2.numeric_only
+3.中位数
+4.当前行到之前行
+5.sep
+6.sheet_name
+7.parse_dates
+8.index_col
+1.count 计算非nan值 axis指定轴 numeric_only 指定是否只计算非Nan
+sum 计算数值总和 axis指定轴 skipna指定是否忽略Nan,numeric_only指定是否只计算非Nan
+mean计算数值的平均数axis指定轴 skipna指定是否忽略Nan,numeric_only指定是否只计算非Nan
+median计算数值的中位数,axis指定轴 skipna指定是否忽略Nan,numeric_only指定是否只计算非Nan
+min 得出熟知的最小值axis指定轴 skipna指定是否忽略Nan,numeric_only指定是否只计算非Nan
+2.能记录之前的值
+3.import pandas as pd
+import numpy as np
+
+# a. 读取前6行，并将日期转为日期类型
+df = pd.read_csv('sales.csv', nrows=6, parse_dates=['日期'])
+print("读取的前6行数据:")
+print(df)
+print("\n数据类型:")
+print(df.dtypes)
+
+# b. 计算统计指标
+print("\n" + "=" * 50)
+print("统计计算结果:")
+print("=" * 50)
+
+# 1. 每列的非NaN值数量
+count_stats = df.count()
+print(f"\n1. 非NaN值数量:\n{count_stats}")
+
+# 2. 每列的总和（仅数值列）
+sum_stats = df.sum(numeric_only=True)
+print(f"\n2. 总和:\n{sum_stats}")
+
+# 3. 平均值
+mean_stats = df.mean(numeric_only=True)
+print(f"\n3. 平均值:\n{mean_stats}")
+
+# 4. 中位数
+median_stats = df.median(numeric_only=True)
+print(f"\n4. 中位数:\n{median_stats}")
+
+# 5. 最小值
+min_stats = df.min(numeric_only=True)
+print(f"\n5. 最小值:\n{min_stats}")
+
+# 6. 最大值
+max_stats = df.max(numeric_only=True)
+print(f"\n6. 最大值:\n{max_stats}")
+
+# c. 将原始数据和分析结果保存到Excel文件（两个工作表）
+print("\n" + "=" * 50)
+print("保存到Excel文件...")
+print("=" * 50)
+
+# 创建一个ExcelWriter对象
+with pd.ExcelWriter('sales_analysis.xlsx', engine='openpyxl') as writer:
+    # 1. 保存原始数据到'原始数据'工作表
+    df.to_excel(writer, sheet_name='原始数据', index=False)
+    print("✓ 原始数据已保存到工作表 '原始数据'")
+
+    # 2. 创建分析结果DataFrame
+    # 方法1：使用字典创建分析结果表格
+    analysis_results = pd.DataFrame({
+        '统计指标': ['非NaN值数量', '总和', '平均值', '中位数', '最小值', '最大值'],
+        '销售额': [
+            count_stats['销售额'],
+            sum_stats['销售额'],
+            mean_stats['销售额'],
+            median_stats['销售额'],
+            min_stats['销售额'],
+            max_stats['销售额']
+        ],
+        '数量': [
+            count_stats['数量'],
+            df['数量'].sum(),  # 注意：数量是字符串，需要先转换
+            df['数量'].mean(),
+            df['数量'].median(),
+            df['数量'].min(),
+            df['数量'].max()
+        ]
+    })
+
+    # 保存分析结果到'分析结果'工作表
+    analysis_results.to_excel(writer, sheet_name='分析结果', index=False)
+    print("✓ 分析结果已保存到工作表 '分析结果'")
+
+print("\n文件已成功保存为: sales_analysis.xlsx")

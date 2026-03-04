@@ -1,0 +1,44 @@
+1.c
+2.b
+3.b
+4.c
+5.b
+6.b
+7.b
+8.b
+9.b
+10.a
+1.bool,缺失值
+2.非缺失值
+3.后一个
+4.列名或列名列表
+5.字典
+6.则在无法转换数据时抛出异常
+7.first/last
+8.Series
+9.outer/inner
+10.level
+1.isnull是寻找缺失值，找到则是True,没找到则是False，然后返回一个bool数据类型的DataFrame，
+dropna是删除缺失值,先选择轴，然后再根据how来确定删除规则
+fillna是填充缺失值的,先选择轴,然后有无想要填充的填充值，再选择规则
+2.import pandas as pd
+import numpy as np
+
+# 使用字典创建DataFrame
+data = {
+    '日期': ['2023-01-01', '2023-01-01', '2023-01-02', '2023-01-02',
+            '2023-01-03', '2023-01-03', '2023-01-04', '2023-01-04'],
+    '产品': ['A', 'B', 'A', 'B', 'A', 'B', 'A', 'B'],
+    '销售额': [1200, 800, 1500, np.nan, 1100, 950, np.nan, 1300],
+    '地区': ['华北', '华东', '华北', '华东', '华北', '华东', '华北', '华东']
+}
+
+df = pd.DataFrame(data)
+print(df)
+print(df.isnull().sum())
+print(df.dropna())
+print(df.sort_values(by = ['日期','销售额'],ascending=[True,False]))
+a = df[df['销售额']>1000]
+b = a[a['地区'] == '华北']
+print(b)
+c = pd.concat((df,d),axis=0)
