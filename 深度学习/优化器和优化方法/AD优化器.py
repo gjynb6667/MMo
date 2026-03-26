@@ -15,15 +15,15 @@ Y = points[:, 1]
 w = 0
 b = -1
 lr = 0.001
-moment = 0.9
+eslipe = 1e-7
 v_w = 0
 v_b = 0
 def loss_func(x,w,b):
     pre_y = np.dot(x,w)+b
     loss = np.mean((Y-pre_y)**2)
     return loss
-def SGD(points,w,b,batch_size):
-    global moment,v_w,v_b
+def AdaGrad(points,w,b,batch_size):
+    global eslipe,v_w,v_b
     np.random.shuffle(points)
     for num in range(0,len(points),batch_size):
         get_point = points[num:num+batch_size,:]
@@ -32,10 +32,10 @@ def SGD(points,w,b,batch_size):
         pre_y = w*get_x+b
         dw = np.mean(2*(pre_y-get_y)*get_x)
         db = np.mean(2*(pre_y-get_y)*get_x)
-        v_w = moment*v_w +lr*dw
-        v_b = moment*v_b + lr*db
-        w -= v_w
-        b -= v_b
+        v_w = v_w + dw**2
+        v_b = v_b + db**2
+        w = w - lr/np.sqrt(v_w+eslipe)
+        b = b - lr/np.sqrt(v_b+eslipe)
     return w,b
 w_value = np.linspace(-20,80,100)
 b_value = np.linspace(-20,80,100)
@@ -48,9 +48,8 @@ for i,w in enumerate(w_value):
 epochs = 1000
 bs = 2
 for epoch in range(1,epochs+1):
-    w,b = SGD(points,w,b,bs)
+    w,b = AdaGrad(points,w,b,bs)
     if epoch ==1 or epoch%20 ==0:
         print(loss_func(X,w,b))
-
 
 
